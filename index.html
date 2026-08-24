@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>أكاديمية التميز - منصة الدورات التدريبية</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Header / Navigation -->
+    <header class="navbar">
+        <div class="logo">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <span>أكاديمية التميز</span>
+        </div>
+        <nav class="nav-links">
+            <a href="#" class="active" onclick="showPage('catalog')"><i class="fa-solid fa-book-open"></i> الدورات</a>
+            <a href="#" onclick="showPage('dashboard')"><i class="fa-solid fa-user-graduate"></i> دوراتي</a>
+        </nav>
+        <div class="header-actions">
+            <button class="cart-btn" onclick="toggleCartModal()">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <span class="cart-badge" id="cartCount">0</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="main-container">
+
+        <!-- Catalog View -->
+        <section id="catalogView" class="page-view active">
+            <!-- Hero Banner -->
+            <div class="hero-banner">
+                <h1>طور مهاراتك وابدأ مسارك المهني اليوم</h1>
+                <p>تعلم من أفضل الخبراء في مجالات البرمجة، التصميم، التسويق وإدارة الأعمال</p>
+                <div class="search-bar">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="searchInput" placeholder="ابحث عن دورة أو مجال..." oninput="filterCourses()">
+                </div>
+            </div>
+
+            <!-- Categories & Filters -->
+            <div class="filter-container">
+                <div class="categories" id="categoriesList">
+                    <button class="category-btn active" onclick="filterCategory('all')">الكل</button>
+                    <button class="category-btn" onclick="filterCategory('programming')">البرمجة والتطوير</button>
+                    <button class="category-btn" onclick="filterCategory('design')">التصميم والغرافيك</button>
+                    <button class="category-btn" onclick="filterCategory('business')">إدارة الأعمال</button>
+                    <button class="category-btn" onclick="filterCategory('marketing')">التسويق الرقمي</button>
+                </div>
+            </div>
+
+            <!-- Courses Grid -->
+            <div class="courses-grid" id="coursesGrid">
+                <!-- Courses injected dynamically -->
+            </div>
+        </section>
+
+        <!-- Course Detail View -->
+        <section id="detailView" class="page-view">
+            <button class="back-btn" onclick="showPage('catalog')">
+                <i class="fa-solid fa-arrow-right"></i> العودة للرئيسية
+            </button>
+            
+            <div class="detail-container" id="courseDetailContainer">
+                <!-- Detail injected dynamically -->
+            </div>
+        </section>
+
+        <!-- My Courses / Dashboard View -->
+        <section id="dashboardView" class="page-view">
+            <div class="dashboard-header">
+                <h2><i class="fa-solid fa-user-graduate"></i> دوراتي المشتركة</h2>
+                <p>يمكنك مشاهدة محتوى الدورات التي قمت بشرائها من هنا</p>
+            </div>
+            <div class="my-courses-grid" id="myCoursesGrid">
+                <!-- Purchased courses injected dynamically -->
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Cart Modal -->
+    <div class="modal-overlay" id="cartModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-cart-shopping"></i> سلة الشراء</h3>
+                <button class="close-btn" onclick="toggleCartModal()">&times;</button>
+            </div>
+            <div class="cart-items-list" id="cartItemsList">
+                <!-- Cart Items injected dynamically -->
+            </div>
+            <div class="cart-footer">
+                <div class="cart-total">
+                    <span>الإجمالي:</span>
+                    <strong id="cartTotalAmount">$0.00</strong>
+                </div>
+                <button class="checkout-btn" onclick="openCheckoutModal()">
+                    المتابعة للدفع <i class="fa-solid fa-credit-card"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Checkout Modal -->
+    <div class="modal-overlay" id="checkoutModal">
+        <div class="modal-content checkout-content">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-shield-halved"></i> إتمام عملية الدفع</h3>
+                <button class="close-btn" onclick="closeCheckoutModal()">&times;</button>
+            </div>
+            <div class="checkout-body">
+                <div class="checkout-summary" id="checkoutSummary">
+                    <!-- Dynamic summary -->
+                </div>
+
+                <form id="paymentForm" onsubmit="processPayment(event)">
+                    <h4>اختر طريقة الدفع:</h4>
+                    <div class="payment-methods">
+                        <label class="payment-method">
+                            <input type="radio" name="paymentType" value="visa" checked onclick="togglePaymentFields('card')">
+                            <div class="method-card">
+                                <i class="fa-brands fa-cc-visa"></i>
+                                <span>بطاقة ائتمان</span>
+                            </div>
+                        </label>
+                        <label class="payment-method">
+                            <input type="radio" name="paymentType" value="apple" onclick="togglePaymentFields('apple')">
+                            <div class="method-card">
+                                <i class="fa-brands fa-apple"></i>
+                                <span>Apple Pay</span>
+                            </div>
+                        </label>
+                        <label class="payment-method">
+                            <input type="radio" name="paymentType" value="stc" onclick="togglePaymentFields('stc')">
+                            <div class="method-card">
+                                <i class="fa-solid fa-wallet"></i>
+                                <span>STC Pay</span>
+                            </div>
+                        </label>
+                    </div>
+
+                    <div id="cardFields" class="payment-fields active-fields">
+                        <div class="form-group">
+                            <label>اسم صاحب البطاقة</label>
+                            <input type="text" placeholder="الاسم كما هو على البطاقة" required>
+                        </div>
+                        <div class="form-group">
+                            <label>رقم البطاقة</label>
+                            <input type="text" placeholder="**** **** **** ****" maxlength="19" required>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>تاريخ الانتهاء</label>
+                                <input type="text" placeholder="MM/YY" maxlength="5" required>
+                            </div>
+                            <div class="form-group">
+                                <label>رمز الأمان (CVV)</label>
+                                <input type="text" placeholder="123" maxlength="3" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="stcFields" class="payment-fields">
+                        <div class="form-group">
+                            <label>رقم الجوال المسجل في STC Pay</label>
+                            <input type="tel" placeholder="05xxxxxxxx">
+                        </div>
+                    </div>
+
+                    <div id="appleFields" class="payment-fields">
+                        <p class="apple-pay-msg"><i class="fa-brands fa-apple"></i> اضغط على زر الشراء أدناه لإتمام الشراء عبر Apple Pay</p>
+                    </div>
+
+                    <button type="submit" class="submit-pay-btn" id="paySubmitBtn">
+                        <i class="fa-solid fa-lock"></i> تأكيد ودفع الآن
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="toast">تمت الإضافة بنجاح!</div>
+
+    <script src="script.js"></script>
+</body>
+</html>
